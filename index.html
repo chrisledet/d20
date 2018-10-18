@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>d20 - roll some dice</title>
+    <style type="text/css">
+        .dice {
+            width: 200px;
+        }
+        .label {
+            width: 30px;
+            text-align: right;
+            display: inline-block;
+        }
+        input {
+            padding: 0 5px;
+            width: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <dice :sides="4"></dice>
+        <dice :sides="6"></dice>
+        <dice :sides="8"></dice>
+        <dice :sides="10"></dice>
+        <dice :sides="12"></dice>
+        <dice :sides="20"></dice>
+    </div>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+<script type="text/javascript">
+
+Vue.component('dice', {
+    template: '#dice',
+    props: ['sides'],
+    methods: {
+        roll: function(e){
+            var result = 0;
+            for (var i = 0; i < parseInt(this.count); i++) {
+                var r = this.rand();
+                result += r;
+            }
+
+            this.result = result;
+        },
+        rand: function(){
+            return Math.floor(Math.random() * Math.floor(this.numOfSides)) + 1;
+        },
+    },
+    data: function(){
+        return {
+            count: 1,
+            result: 0,
+            numOfSides: parseInt(this.sides),
+        };
+    },
+    template: `<div class="dice">
+        <input type="text" name="count" v-model="count">
+        <span class="label">d{{sides}}</span>
+        <button @click="roll">Roll</button>
+        <span>{{result}}</span>
+    </div>`,
+});
+
+new Vue({ el: '#app' });
+
+</script>
+</body>
+</html>
