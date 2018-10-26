@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>d20 - roll some dice</title>
     <style type="text/css">
-        .dice {
-            width: 200px;
-        }
         .label {
             width: 30px;
             text-align: right;
@@ -20,7 +17,6 @@
     </style>
 </head>
 <body>
-    <h2>roll some dice</h2>
     <div id="app">
         <dice :sides="4"></dice>
         <dice :sides="6"></dice>
@@ -29,21 +25,32 @@
         <dice :sides="12"></dice>
         <dice :sides="20"></dice>
     </div>
-<script src="js/vue.js"></script>
+<script src="vue@2.5.17.js"></script>
 <script type="text/javascript">
-
 Vue.component('dice', {
     template: '#dice',
     props: ['sides'],
+    computed: {
+        humanize_results: function(){
+            if (this.error) { return this.error; }
+            if (this.results.length < 1) { return "" };
+            if (this.results.length == 1) { return this.results[0]; };
+            return this.results.join(" + ") + " = " + this.results.reduce(function(t, n){ return t+n; });
+        },
+    },
     methods: {
         roll: function(e){
-            var result = 0;
+            this.error = null;
+            var fresh = [];
+
+            // simple validation
+            if (parseInt(this.count) > 100) { this.error = "too many"; return; }
+
             for (var i = 0; i < parseInt(this.count); i++) {
-                var r = this.rand();
-                result += r;
+                fresh.push(this.rand());
             }
 
-            this.result = result;
+            this.results = fresh;
         },
         rand: function(){
             return Math.floor(Math.random() * Math.floor(this.numOfSides)) + 1;
@@ -51,21 +58,21 @@ Vue.component('dice', {
     },
     data: function(){
         return {
-            count: 1,
-            result: 0,
+            results: [],
+            count: null,
+            error: null,
             numOfSides: parseInt(this.sides),
         };
     },
     template: `<div class="dice">
-        <input type="text" name="count" v-model="count">
+        <input type="text" name="count" v-model="count" placeholder="0">
         <span class="label">d{{sides}}</span>
         <button @click="roll">Roll</button>
-        <span>{{result}}</span>
+        <span>{{humanize_results}}</span>
     </div>`,
 });
 
 new Vue({ el: '#app' });
-
 </script>
 </body>
 </html>
