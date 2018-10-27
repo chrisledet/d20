@@ -39,7 +39,7 @@
 <script src="vue@2.5.17.js"></script>
 <script type="text/x-template" id="dice-template">
     <div class="dice">
-        <input type="text" name="count" v-model="count" placeholder="0">
+        <input type="number" name="count" v-model="count" placeholder="0">
         <span class="label text-light">d{{sides}}</span>
         <button @click="roll" class="btn btn-warning">Roll</button>
         <span class="results text-light">{{humanize_results}}</span>
