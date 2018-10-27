@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <title>d20 - roll some dice</title>
     <style type="text/css">
         input {
@@ -18,6 +18,9 @@
         .results {
             margin-left: 10px;
         }
+        .dice {
+            padding: .75rem 1.25rem;
+        }
     </style>
     <link rel="stylesheet" href="bootstrap@4.1.3.css">
 </head>
@@ -25,40 +28,27 @@
     <div id="app" >
         <div class="container">
             <h2 class="text-light">roll some dice</h2>
-            <ul class="list-group">
-            <li class="list-group-item bg-dark">
-                <dice :sides="4"></dice>
-            </li>
-            <li class="list-group-item bg-dark">
-                <dice :sides="6"></dice>
-            </li>
-            <li class="list-group-item bg-dark">
-                <dice :sides="8"></dice>
-            </li>
-            <li class="list-group-item bg-dark">
-                <dice :sides="10"></dice>
-            </li>
-            <li class="list-group-item bg-dark">
-                <dice :sides="12"></dice>
-            </li>
-            <li class="list-group-item bg-dark">
-                <dice :sides="20"></dice>
-            </li>
+            <dice :sides="4"></dice>
+            <dice :sides="6"></dice>
+            <dice :sides="8"></dice>
+            <dice :sides="10"></dice>
+            <dice :sides="12"></dice>
+            <dice :sides="20"></dice>
         </div> <!-- container -->
     </div> <!-- #app -->
 <script src="vue@2.5.17.js"></script>
 <script type="text/x-template" id="dice-template">
     <div class="dice">
-        <input type="text" name="count" v-model="count" placeholder="0" class="">
+        <input type="text" name="count" v-model="count" placeholder="0">
         <span class="label text-light">d{{sides}}</span>
-        <button @click="roll" class="btn btn-sm" :class="randBtnStyle()">Roll</button>
+        <button @click="roll" class="btn btn-warning">Roll</button>
         <span class="results text-light">{{humanize_results}}</span>
     </div>
 </script>
 <script type="text/javascript">
 Vue.component('dice', {
     template: "#dice-template",
-    props: ['sides'],
+    props: ['sides', 'btnstyle'],
     computed: {
         humanize_results: function(){
             if (this.error) { return this.error; }
@@ -73,7 +63,7 @@ Vue.component('dice', {
             var fresh = [];
 
             // simple validation
-            if (parseInt(this.count) > 100) { this.error = "too many"; return; }
+            if (parseInt(this.count) > this.max) { this.error = "too many"; return; }
 
             for (var i = 0; i < parseInt(this.count); i++) {
                 fresh.push(this.randSide());
@@ -95,6 +85,7 @@ Vue.component('dice', {
             results: [],
             count: null,
             error: null,
+            max: 500,
             numOfSides: parseInt(this.sides),
         };
     },
