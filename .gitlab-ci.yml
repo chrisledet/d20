@@ -1,0 +1,5 @@
+deploy:
+  image: python:latest
+  script:
+  - pip install awscli
+  - aws s3 cp ./ s3://$S3_BUCKET_NAME/ --exclude "*" --include "*.html" --include "*.js" --include "*.css"
